@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"testing"
 
+	"github.com/google/renameio/v2"
 	"golang.org/x/sys/unix"
 )
 
@@ -125,4 +126,15 @@ func StatUidGid(t *testing.T, fi os.FileInfo) (uid, gid int) {
 		t.Fatalf("FileInfo.Sys() is %T, want *syscall.Stat_t", fi.Sys())
 	}
 	return int(stt.Uid), int(stt.Gid)
+}
+
+// ReplaceSymlink atomically replaces newname with a symlink to oldname.
+//
+// On Unix, this function works atomically,
+// on Windows it falls back to non-atomic behavior.
+func ReplaceSymlink(t *testing.T, oldname, newname string) {
+	t.Helper()
+	if err := renameio.Symlink(oldname, newname); err != nil {
+		t.Fatal(err)
+	}
 }

@@ -14,7 +14,6 @@ import (
 	"github.com/gokrazy/rsync/internal/rsynctest"
 	"github.com/gokrazy/rsync/internal/testlogger"
 	"github.com/google/go-cmp/cmp"
-	"github.com/google/renameio/v2"
 )
 
 func TestMain(m *testing.M) {
@@ -157,9 +156,7 @@ func TestSender(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Replace the dest symlink to see if it will be restored
-	if err := renameio.Symlink("wrong", filepath.Join(dest, "hey")); err != nil {
-		t.Fatal(err)
-	}
+	rsynctest.ReplaceSymlink(t, "wrong", filepath.Join(dest, "hey"))
 
 	rsynctest.Run(t, args...)
 
@@ -294,9 +291,7 @@ func TestSenderNoSlash(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Replace the dest symlink to see if it will be restored
-	if err := renameio.Symlink("wrong", filepath.Join(dest, "hey")); err != nil {
-		t.Fatal(err)
-	}
+	rsynctest.ReplaceSymlink(t, "wrong", filepath.Join(dest, "hey"))
 
 	rsynctest.Run(t, args...)
 
@@ -505,9 +500,7 @@ func TestSenderBothLocal(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Replace the dest symlink to see if it will be restored
-	if err := renameio.Symlink("wrong", filepath.Join(dest, "hey")); err != nil {
-		t.Fatal(err)
-	}
+	rsynctest.ReplaceSymlink(t, "wrong", filepath.Join(dest, "hey"))
 
 	rsynctest.Run(t, args...)
 

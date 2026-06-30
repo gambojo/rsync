@@ -8,7 +8,6 @@ import (
 	"os/user"
 	"path/filepath"
 	"strconv"
-	"syscall"
 	"testing"
 	"time"
 
@@ -129,11 +128,11 @@ func TestSender(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		stt := st.Sys().(*syscall.Stat_t)
-		if got, want := int(stt.Uid), uid; got != want {
+		gotUID, gotGID := rsynctest.StatUidGid(t, st)
+		if got, want := gotUID, uid; got != want {
 			t.Errorf("unexpected uid: got %d, want %d", got, want)
 		}
-		if got, want := int(stt.Gid), gid; got != want {
+		if got, want := gotGID, gid; got != want {
 			t.Errorf("unexpected gid: got %d, want %d", got, want)
 		}
 	}
@@ -266,11 +265,11 @@ func TestSenderNoSlash(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		stt := st.Sys().(*syscall.Stat_t)
-		if got, want := int(stt.Uid), uid; got != want {
+		gotUID, gotGID := rsynctest.StatUidGid(t, st)
+		if got, want := gotUID, uid; got != want {
 			t.Errorf("unexpected uid: got %d, want %d", got, want)
 		}
-		if got, want := int(stt.Gid), gid; got != want {
+		if got, want := gotGID, gid; got != want {
 			t.Errorf("unexpected gid: got %d, want %d", got, want)
 		}
 	}
@@ -477,11 +476,11 @@ func TestSenderBothLocal(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		stt := st.Sys().(*syscall.Stat_t)
-		if got, want := int(stt.Uid), uid; got != want {
+		gotUID, gotGID := rsynctest.StatUidGid(t, st)
+		if got, want := gotUID, uid; got != want {
 			t.Errorf("unexpected uid: got %d, want %d", got, want)
 		}
-		if got, want := int(stt.Gid), gid; got != want {
+		if got, want := gotGID, gid; got != want {
 			t.Errorf("unexpected gid: got %d, want %d", got, want)
 		}
 	}

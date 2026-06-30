@@ -114,3 +114,15 @@ func VerifyDummyDeviceFiles(t *testing.T, source, dest string) {
 		}
 	}
 }
+
+// StatUidGid returns the owner uid and gid backing fi.
+//
+// This check is encapsulated in StatUidGid so that
+// on Windows, we can fail loudly (the check should be skipped).
+func StatUidGid(t *testing.T, fi os.FileInfo) (uid, gid int) {
+	stt, ok := fi.Sys().(*syscall.Stat_t)
+	if !ok {
+		t.Fatalf("FileInfo.Sys() is %T, want *syscall.Stat_t", fi.Sys())
+	}
+	return int(stt.Uid), int(stt.Gid)
+}

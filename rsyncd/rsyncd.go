@@ -539,7 +539,7 @@ func (s *Server) handleConnSender(module *Module, crd *rsyncwire.CountingReader,
 	if module == nil {
 		module = &Module{
 			Name: "implicit",
-			Path: "/",
+			Path: rsync.FileSystemRoot,
 		}
 	}
 

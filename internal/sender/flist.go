@@ -349,7 +349,7 @@ func (st *Transfer) SendFileList(localDir string, paths []string, excl *filterRu
 
 	for _, requested := range paths {
 		local := localDir
-		if local == "/" {
+		if local == rsync.FileSystemRoot {
 			// Implicit module (/) and absolute requested path (/tmp/foo/),
 			// turn the path into the local directory and request /.
 			local = requested

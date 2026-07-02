@@ -115,7 +115,8 @@ func TestClientCommand(t *testing.T) {
 	tmp := t.TempDir()
 	dest := filepath.Join(tmp, "dest")
 	// Start an rsync process directly for the server part of the test.
-	rsync := exec.Command(rsynctest.AnyRsync(t), client.ServerCommandOptions(tmp)...)
+	rsync := exec.Command(rsynctest.AnyRsync(t), client.ServerCommandOptions(".")...)
+	rsync.Dir = tmp
 	wc, err := rsync.StdinPipe()
 	if err != nil {
 		t.Fatal(err)

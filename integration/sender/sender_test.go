@@ -682,8 +682,9 @@ func TestReceiverCommandDryRun(t *testing.T) {
 		"--dry-run",
 		"-e", exe,
 		"-a",
-		source+"/",
+		filepath.Base(source)+"/",
 		"localhost:"+dest+"/")
+	rsync.Dir = filepath.Dir(source)
 	rsync.Stdout = &buf
 	rsync.Stderr = testlogger.New(t)
 	t.Logf("%v", rsync.Args)

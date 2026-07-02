@@ -130,7 +130,8 @@ acl = [
 				"--dry-run",
 				"rsync://localhost/interop/", // copy contents of interop
 				//source+"/", // sync from local directory
-				dest) // directly into dest
+				filepath.Base(dest)) // directly into dest
+			rsync.Dir = filepath.Dir(dest)
 			rsync.Stdout = testlogger.New(t)
 			rsync.Stderr = &buf
 			if err := rsync.Run(); err != nil {

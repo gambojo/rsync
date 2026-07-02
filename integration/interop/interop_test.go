@@ -236,7 +236,8 @@ func TestInterop(t *testing.T) {
 		"--dry-run",
 		"rsync://localhost/interop/", // copy contents of interop
 		//source+"/", // sync from local directory
-		dest) // directly into dest
+		filepath.Base(dest)) // directly into dest
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	if err := rsync.Run(); err != nil {
@@ -251,7 +252,8 @@ func TestInterop(t *testing.T) {
 		"--port="+srv.Port,
 		"rsync://localhost/interop/", // copy contents of interop
 		//source+"/", // sync from local directory
-		dest) // directly into dest
+		filepath.Base(dest)) // directly into dest
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	if err := rsync.Run(); err != nil {
@@ -293,7 +295,8 @@ func TestInterop(t *testing.T) {
 		"--port="+srv.Port,
 		"rsync://localhost/interop/", // copy contents of interop
 		//source+"/", // sync from local directory
-		dest) // directly into dest
+		filepath.Base(dest)) // directly into dest
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	if err := rsync.Run(); err != nil {
@@ -384,7 +387,8 @@ func TestInteropSubdir(t *testing.T) {
 				"-v", "-v", "-v", "-v",
 				"--port=" + srv.Port,
 			}, sourcesArgs(t)...),
-			dest)...)
+			filepath.Base(dest))...)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	if err := rsync.Run(); err != nil {
@@ -419,7 +423,8 @@ func TestInteropSubdirExclude(t *testing.T) {
 				"-v", "-v", "-v", "-v",
 				"--port=" + srv.Port,
 			}, "rsync://localhost/interop/"),
-			dest)...)
+			filepath.Base(dest))...)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	if err := rsync.Run(); err != nil {
@@ -502,7 +507,8 @@ func TestInteropSubdirExcludeMultipleNested(t *testing.T) {
 				"-v", "-v", "-v", "-v",
 				"--port=" + srv.Port,
 			}, "rsync://localhost/interop/"),
-			dest)...)
+			filepath.Base(dest))...)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	if err := rsync.Run(); err != nil {
@@ -541,7 +547,8 @@ func TestInteropRemoteCommand(t *testing.T) {
 				"-v", "-v", "-v", "-v",
 				"-e", os.Args[0],
 			}, sourcesArgs...),
-			dest)...)
+			filepath.Base(dest))...)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	if err := rsync.Run(); err != nil {
@@ -604,7 +611,8 @@ func TestInteropRemoteDaemon(t *testing.T) {
 				"-v", "-v", "-v", "-v",
 				"-e", os.Args[0],
 			}, sourcesArgs(t)...),
-			dest)...)
+			filepath.Base(dest))...)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = testlogger.New(t)
 	rsync.Stderr = testlogger.New(t)
 	// TODO: does os.Environ() reflect changes by os.Setenv()?
@@ -659,7 +667,8 @@ func TestInteropRemoteDaemonSSH(t *testing.T) {
 					"-v", "-v", "-v", "-v",
 					"-e", "ssh -o IdentityFile=" + privKeyPath + " -o StrictHostKeyChecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -p " + srv.Port,
 				}, sourcesArgs(t)...),
-				dest)...)
+				filepath.Base(dest))...)
+		rsync.Dir = filepath.Dir(dest)
 		// Ensure SSH_* environment variables (like SSH_ASKPASS or
 		// SSH_AUTH_SOCK) do not leak into the test, otherwise tests
 		// might be interrupted by a text UI password prompt.
@@ -708,7 +717,8 @@ func TestInteropRemoteDaemonSSH(t *testing.T) {
 					"-v", "-v", "-v", "-v",
 					"-e", "ssh -o IdentityFile=" + privKeyPath + " -o StrictHostKeyChecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -p " + srv.Port,
 				}, sourcesArgs(t)...),
-				dest)...)
+				filepath.Base(dest))...)
+		rsync.Dir = filepath.Dir(dest)
 		rsync.Stdout = testlogger.New(t)
 		rsync.Stderr = testlogger.New(t)
 		if err := rsync.Run(); err == nil {
@@ -753,7 +763,8 @@ func TestInteropRemoteDaemonSSH(t *testing.T) {
 					"-v", "-v", "-v", "-v",
 					"-e", "ssh -o IdentityFile=" + privKeyPath + " -o StrictHostKeyChecking=no -o CheckHostIP=no -o UserKnownHostsFile=/dev/null -p " + srv.Port,
 				}, sourcesArgs(t)...),
-				dest)...)
+				filepath.Base(dest))...)
+		rsync.Dir = filepath.Dir(dest)
 		rsync.Stdout = testlogger.New(t)
 		rsync.Stderr = testlogger.New(t)
 		if err := rsync.Run(); err != nil {

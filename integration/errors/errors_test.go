@@ -36,7 +36,8 @@ func TestErrors(t *testing.T) {
 		"--port="+srv.Port,
 		"rsync://localhost/interop/", // copy contents of interop
 		//source+"/", // sync from local directory
-		dest) // directly into dest
+		filepath.Base(dest)) // directly into dest (relative to rsync.Dir)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = &buf
 	rsync.Stderr = &buf
 	if err := rsync.Run(); err == nil {
@@ -69,7 +70,8 @@ func TestNoSuchModule(t *testing.T) {
 		"--port="+srv.Port,
 		"rsync://localhost/requesting-nonsense/", // copy contents of interop
 		//source+"/", // sync from local directory
-		dest) // directly into dest
+		filepath.Base(dest)) // directly into dest (relative to rsync.Dir)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = &buf
 	rsync.Stderr = &buf
 	if err := rsync.Run(); err == nil {
@@ -119,7 +121,8 @@ func TestNoReadPermission(t *testing.T) {
 		"-v", "-v", "-v", "-v",
 		"--port="+srv.Port,
 		"rsync://localhost/interop/", // copy contents of interop
-		dest)                         // directly into dest
+		filepath.Base(dest))          // directly into dest (relative to rsync.Dir)
+	rsync.Dir = filepath.Dir(dest)
 	rsync.Stdout = &buf
 	rsync.Stderr = &buf
 	if err := rsync.Run(); err != nil {

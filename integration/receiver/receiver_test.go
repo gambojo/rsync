@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
@@ -461,6 +462,10 @@ func TestReceiverReadOnlyDir(t *testing.T) {
 }
 
 func TestReceiverSSH(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("ssh transport test relies on a POSIX ssh client and /dev/null")
+	}
+
 	tmp := t.TempDir()
 	source := filepath.Join(tmp, "source")
 	dest := filepath.Join(tmp, "dest")

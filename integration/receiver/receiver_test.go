@@ -526,7 +526,7 @@ func TestReceiverCommand(t *testing.T) {
 	rsynctest.Run(t, "gokr-rsync",
 		"-aH",
 		"--dry-run",
-		"-e", os.Args[0],
+		"-e", `"`+os.Args[0]+`"`,
 		"localhost:"+source+"/",
 		dest)
 }

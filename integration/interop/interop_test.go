@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -270,7 +271,8 @@ func TestInterop(t *testing.T) {
 		}
 	}
 
-	{
+	// Symlinks work differently on Windows.
+	if runtime.GOOS != "windows" {
 		got, err := os.Readlink(filepath.Join(dest, "link_to_dummy"))
 		if err != nil {
 			t.Fatal(err)
@@ -528,6 +530,10 @@ func TestInteropSubdirExcludeMultipleNested(t *testing.T) {
 func TestInteropRemoteCommand(t *testing.T) {
 	t.Parallel()
 
+	if runtime.GOOS == "windows" {
+		t.Skip("stdin not supported on Windows")
+	}
+
 	_, source, dest := createSourceFiles(t)
 
 	sourcesArgs := []string{
@@ -545,7 +551,7 @@ func TestInteropRemoteCommand(t *testing.T) {
 				"--archive",
 				"--protocol=27",
 				"-v", "-v", "-v", "-v",
-				"-e", os.Args[0],
+				"-e", `"` + os.Args[0] + `"`,
 			}, sourcesArgs...),
 			filepath.Base(dest))...)
 	rsync.Dir = filepath.Dir(dest)
@@ -562,6 +568,10 @@ func TestInteropRemoteCommand(t *testing.T) {
 
 func TestInteropRemoteDaemon(t *testing.T) {
 	t.Parallel()
+
+	if runtime.GOOS == "windows" {
+		t.Skip("stdin not supported on Windows")
+	}
 
 	rsyncBin := rsynctest.TridgeOrGTFO(t, "https://github.com/gokrazy/rsync/issues/33")
 
@@ -609,7 +619,7 @@ func TestInteropRemoteDaemon(t *testing.T) {
 				//		"--debug=all4",
 				"--archive",
 				"-v", "-v", "-v", "-v",
-				"-e", os.Args[0],
+				"-e", `"` + os.Args[0] + `"`,
 			}, sourcesArgs(t)...),
 			filepath.Base(dest))...)
 	rsync.Dir = filepath.Dir(dest)
@@ -630,6 +640,10 @@ func TestInteropRemoteDaemon(t *testing.T) {
 
 func TestInteropRemoteDaemonSSH(t *testing.T) {
 	t.Parallel()
+
+	if runtime.GOOS == "windows" {
+		t.Skip("/dev/null not supported on Windows")
+	}
 
 	// ensure the user running the tests (root when doing the privileged run!)
 	// has an SSH private key:

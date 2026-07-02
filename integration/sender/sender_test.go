@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"testing"
 	"time"
@@ -654,6 +655,10 @@ func TestSenderPartial257K(t *testing.T) {
 func TestReceiverCommandDryRun(t *testing.T) {
 	t.Parallel()
 
+	if runtime.GOOS == "windows" {
+		t.Skip("stdin not supported on Windows")
+	}
+
 	tmp := t.TempDir()
 	source := filepath.Join(tmp, "source")
 	dest := filepath.Join(tmp, "dest")
@@ -680,7 +685,7 @@ func TestReceiverCommandDryRun(t *testing.T) {
 	var buf bytes.Buffer
 	rsync := exec.Command(rsynctest.AnyRsync(t),
 		"--dry-run",
-		"-e", exe,
+		"-e", `"`+exe+`"`,
 		"-a",
 		filepath.Base(source)+"/",
 		"localhost:"+dest+"/")

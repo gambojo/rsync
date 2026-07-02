@@ -13,13 +13,13 @@ type pendingFile struct {
 }
 
 func newPendingFile(root *os.Root, fn string) (*pendingFile, error) {
-	dir := filepath.Join(root.Name(), filepath.Dir(fn))
-	f, err := os.CreateTemp(dir, "temp-rsync-*")
+	abs := filepath.Join(root.Name(), fn)
+	f, err := os.CreateTemp(filepath.Dir(abs), "temp-rsync-*")
 	if err != nil {
 		return nil, err
 	}
 	return &pendingFile{
-		fn: fn,
+		fn: abs,
 		f:  f,
 	}, nil
 }

@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -172,6 +173,13 @@ func doCmd(osenv *rsyncos.Env, opts *rsyncopts.Options, machine, user, path stri
 		// We use shlex.Split(), whereas rsync implements its own shell-style-like
 		// parsing. The nuances likely don’t matter to any users, and if so, users
 		// might prefer shell-style parsing.
+		//
+		// On Windows, double the backslashes first: shlex treats "\" as an escape
+		// character, which would otherwise mangle a native "-e C:\path\rsync.exe"
+		// into "C:pathrsync.exe".
+		if runtime.GOOS == "windows" {
+			cmd = strings.ReplaceAll(cmd, `\`, `\\`)
+		}
 		var err error
 		args, err = shlex.Split(cmd)
 		if err != nil {

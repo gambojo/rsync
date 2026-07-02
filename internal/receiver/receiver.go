@@ -176,6 +176,13 @@ func (rt *Transfer) receiveData(f *File, localFile *os.File) error {
 		rt.Logger.Printf("checksum %x matches!", localSum)
 	}
 
+	if localFile != nil {
+		// Close the file earlier than the calling function’s deferred Close(),
+		// so that we can rename files on Windows, which fails as long
+		// as there are any open file handles.
+		localFile.Close()
+	}
+
 	if err := out.CloseAtomicallyReplace(); err != nil {
 		return err
 	}

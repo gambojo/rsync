@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"os"
 	"os/user"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -63,13 +64,13 @@ var (
 	lookupGroupOnce sync.Once
 )
 
+// getStrip operates on wire paths (slash space).
 func getStrip(requested string) string {
-	sep := string(os.PathSeparator)
-	if requested == sep {
+	if requested == "/" {
 		return ""
 	}
-	if strings.HasSuffix(requested, sep) {
-		return strings.TrimPrefix(filepath.Clean(requested), "/") + sep
+	if strings.HasSuffix(requested, "/") {
+		return strings.TrimPrefix(path.Clean(requested), "/") + "/"
 	}
 	return ""
 }
@@ -106,7 +107,7 @@ func (s *scopedWalker) walk() error {
 	if strings.HasPrefix(rootname, "/") {
 		rootname = "." + rootname
 	}
-	if err := fs.WalkDir(s.source.FS(), filepath.Clean(rootname), s.walkFn); err != nil {
+	if err := fs.WalkDir(s.source.FS(), path.Clean(rootname), s.walkFn); err != nil {
 		return err
 	}
 	return nil
@@ -353,7 +354,8 @@ func (st *Transfer) SendFileList(localDir string, paths []string, excl *filterRu
 			// Implicit module (/) and absolute requested path (/tmp/foo/),
 			// turn the path into the local directory and request /.
 			local = requested
-			if strings.HasSuffix(requested, string(os.PathSeparator)) {
+			if strings.HasSuffix(requested, "/") {
+				local = filepath.Clean(requested)
 				requested = "/"
 			} else {
 				local = filepath.Dir(requested)

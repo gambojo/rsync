@@ -55,7 +55,7 @@ func TestIPACL(t *testing.T) {
 	cfg, err := rsyncdconfig.FromString(`
 [[module]]
 name = "interop"
-path = "` + source + `"
+path = '` + source + `'
 acl = [
   "allow 192.168.1.0/24",
   "allow 2001:db8::1/32",
